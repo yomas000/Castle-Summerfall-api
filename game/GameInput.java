@@ -6,30 +6,28 @@ import java.util.Random;
 
 public class GameInput {
 
+    static final int FLOORSIZE = 10;
+    static Pattern helpPat = Pattern.compile("[Hh]elp ([a-z].*)");
+    static Pattern movePat = Pattern.compile("[Mm]ove ([N|n|S|s|W|w|E|e])");
+    static Pattern inspectPat = Pattern.compile("[Ii]nspect ([A-Za-z].*)");
+    static Pattern takePat = Pattern.compile("[tT]ake ([A-Za-z].*)");
+    static Pattern bookPat = Pattern.compile("[Bb]ookmark ([A-Za-z].*?) : ([A-Za-z].*)");
+    static Pattern dropPat = Pattern.compile("[Dd]rop ([A-Za-z].*)");
+    static Pattern attackPat = Pattern.compile("[Aa]ttack ([A-Za-z].*?) [Ww].* ([A-Za-z].*)");
+    static Floor floor = Generator.generateFloor(FLOORSIZE, FLOORSIZE);
+    static Player player = new Player(0, 0, 7, 20, 2);
+    static int energy = player.getEnergy();
+    static Random rand = new Random();
+    static boolean endGame = true;
+
     /**
      * @param args
      */
     public static String input(String inputCommand) {
         String output = "";
 
-        final int FLOORSIZE = 10;
-        Pattern helpPat = Pattern.compile("[Hh]elp ([a-z].*)");
-        Pattern movePat = Pattern.compile("[Mm]ove ([N|n|S|s|W|w|E|e])");
-        Pattern inspectPat = Pattern.compile("[Ii]nspect ([A-Za-z].*)");
-        Pattern takePat = Pattern.compile("[tT]ake ([A-Za-z].*)");
-        Pattern bookPat = Pattern.compile("[Bb]ookmark ([A-Za-z].*?) : ([A-Za-z].*)");
-        Pattern dropPat = Pattern.compile("[Dd]rop ([A-Za-z].*)");
-        Pattern attackPat = Pattern.compile("[Aa]ttack ([A-Za-z].*?) [Ww].* ([A-Za-z].*)");
-        Floor floor = Generator.generateFloor(FLOORSIZE, FLOORSIZE);
-        Player player = new Player(0, 0, 7, 20, 2);
-        int energy = player.getEnergy();
-        Random rand = new Random();
-        boolean endGame = true;
-        System.out.println(floor.getDescription(0, 0));
-        final String OSNAME = System.getProperty("os.name");
         floor.getRoom(player.getXCoord(), player.getYCoord()).visit();
 
-        System.out.print("\n> ");
         Matcher helpMatch = helpPat.matcher(inputCommand);
         Matcher moveMatch = movePat.matcher(inputCommand);
         Matcher inspectMatch = inspectPat.matcher(inputCommand);
@@ -41,14 +39,16 @@ public class GameInput {
 
         boolean commandKnown = true;
 
-        if (inputCommand.equals("help")) {
-            UI.helpCommand("all");
-            commandKnown = false;
-        }
+        //TODO: Make this work for api
+        // if (inputCommand.equals("help")) {
+        //     UI.helpCommand("all");
+        //     commandKnown = false;
+        // }
 
         // help command
         if (helpMatch.find()) {
-            UI.helpCommand(helpMatch.group(1));
+            //TODO: Make UI start returning strings
+            //UI.helpCommand(helpMatch.group(1));
             commandKnown = false;
         }
         // Move command
@@ -57,25 +57,13 @@ public class GameInput {
             int energyCost = UI.Commands.MOVE.getSpeedCommand();
             if (energy - energyCost < 0) {
                 System.out.println("You don't have enough energy to do this  ");
-                UI.displayEnergy(energy);
+                //TODO: Make UI displayEnergy work
+                //UI.displayEnergy(energy);
             } else {
                 energy -= energyCost;
-                UI.move(moveMatch.group(1), player, floor, FLOORSIZE);
+                //TODO: Make UI movement work
+                //UI.move(moveMatch.group(1), player, floor, FLOORSIZE);
             }
-        }
-
-        // clear command
-        if (inputCommand.equals(UI.Commands.CLEAR.getStrCommand())) {
-            int height = 12;
-            if (!OSNAME.equals("Windows 10")) {
-                System.out.print("\033[H\033[2J\033[5B");
-                System.out.flush();
-            } else {
-                for (int i = 0; i < height; i++) {
-                    System.out.println();
-                }
-            }
-            commandKnown = false;
         }
 
         // look around command
@@ -84,7 +72,7 @@ public class GameInput {
             int energyCost = UI.Commands.LOOK_AROUND.getSpeedCommand();
             if (energy - energyCost < 0) {
                 System.out.println("You don't have enough energy to do this");
-                UI.displayEnergy(energy);
+                //UI.displayEnergy(energy);
             } else {
                 energy -= energyCost;
                 System.out.println(floor.getDescription(player.getXCoord(), player.getYCoord()));
@@ -184,11 +172,10 @@ public class GameInput {
             int energyCost = UI.Commands.INVENTORY.getSpeedCommand();
             if (energy - energyCost < 0) {
                 System.out.println("You don't have enough energy to do this");
-                UI.displayEnergy(energy);
+                //UI.displayEnergy(energy);
             } else {
                 energy -= energyCost;
-                UI.displayInventory(player.getInventory(), player.getHealth(), player.getMaxHealth(),
-                        player.getMaxWeight());
+                //UI.displayInventory(player.getInventory(), player.getHealth(), player.getMaxHealth(), player.getMaxWeight());
             }
 
             commandKnown = false;
@@ -199,7 +186,7 @@ public class GameInput {
             int energyCost = UI.Commands.TAKE.getSpeedCommand();
             if (energy - energyCost < 0) {
                 System.out.println("You don't have enough energy to do this");
-                UI.displayEnergy(energy);
+                //UI.displayEnergy(energy);
             } else {
                 String itemString = takeMatch.group(1);
                 itemString = " " + itemString;
@@ -416,11 +403,10 @@ public class GameInput {
             System.out.println("Sorry I don't know what you wanted.");
         }
 
-        if (!OSNAME.equals("Windows 10")) {
-            UI.printHeader(player.getHealth(), player.getMaxHealth(), energy, player.getInventory().size());
-        }
         floor.getRoom(player.getXCoord(), player.getYCoord()).visit();
        
         return output;
     }
+
+    //TODO: Make functions for getting player stats & stuff
 }
