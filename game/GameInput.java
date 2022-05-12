@@ -56,7 +56,7 @@ public class GameInput {
             commandKnown = false;
             int energyCost = UI.Commands.MOVE.getSpeedCommand();
             if (energy - energyCost < 0) {
-                System.out.println("You don't have enough energy to do this  ");
+                output += "You don't have enough energy to do this  ";
                 //TODO: Make UI displayEnergy work
                 //UI.displayEnergy(energy);
             } else {
@@ -71,11 +71,11 @@ public class GameInput {
             commandKnown = false;
             int energyCost = UI.Commands.LOOK_AROUND.getSpeedCommand();
             if (energy - energyCost < 0) {
-                System.out.println("You don't have enough energy to do this");
+                output += "You don't have enough energy to do this";
                 //UI.displayEnergy(energy);
             } else {
                 energy -= energyCost;
-                System.out.println(floor.getDescription(player.getXCoord(), player.getYCoord()));
+                floor.getDescription(player.getXCoord(), player.getYCoord());
             }
         }
 
@@ -83,7 +83,7 @@ public class GameInput {
         if (bookMatch.find()) {
             floor.getRoom(player.getXCoord(), player.getYCoord()).addBookmark(bookMatch.group(1),
                     bookMatch.group(2));
-            System.out.println("This room is bookmarked with the character: " + bookMatch.group(1).charAt(0));
+                    output += "This room is bookmarked with the character: " + bookMatch.group(1).charAt(0);
             commandKnown = false;
         }
 
@@ -93,7 +93,7 @@ public class GameInput {
             String command = inspectMatch.group(1);
             boolean itemFind = true;
             if (energy - energyCost < 0) {
-                System.out.println("You don't have enough energy to do this");
+                output += "You don't have enough energy to do this";
                 UI.displayEnergy(energy);
             } else {
                 energy -= energyCost;
@@ -108,17 +108,17 @@ public class GameInput {
                     matcher.find();
                     firstItem = floor.getRoom(player.getXCoord(), player.getYCoord()).getItem(matcher.group(1));
                     if (!(firstItem instanceof Container)) {
-                        System.out.println(firstItem.getDescription());
+                        firstItem.getDescription();
                         firstItem = null;
                     }
                 } catch (ThingNotFoundException e) {
                     try {
                         Interactable name = floor.getRoom(player.getXCoord(), player.getYCoord())
                                 .getDescriptionInteractable(matcher.group(1));
-                        System.out.println(name.getDescription());
+                        name.getDescription();
                         itemFind = false;
                     } catch (ThingNotFoundException j) {
-                        System.out.println(j.getMessage());
+                        j.getMessage();
                     }
                 }
 
@@ -130,7 +130,7 @@ public class GameInput {
                                 secondItem = container.getItem(matcher.group(1));
                             }
                         } else {
-                            System.out.println("There is no such thing in the container");
+                            output += "There is no such thing in the container";
                         }
                     }
                     if (num == -1) {
@@ -140,7 +140,7 @@ public class GameInput {
                                 firstItem = container.getItem(matcher.group(1));
                             }
                         } else {
-                            System.out.println("There is no such thing in the container");
+                            output +=  "There is no such thing in the container";
                         }
                     }
                     num = num * -1;
@@ -149,15 +149,15 @@ public class GameInput {
                 if (itemFind) {
                     if (num == -1) {
                         if (null != secondItem) {
-                            System.out.println(secondItem.getDescription());
+                            secondItem.getDescription();
                         } else {
-                            System.out.println("Cannot find that Item");
+                            output += "Cannot find that Item";
                         }
                     } else {
                         if (null != firstItem) {
-                            System.out.println(firstItem.getDescription());
+                            firstItem.getDescription();
                         } else {
-                            System.out.println("Cannot find that Item");
+                            output += "Cannot find that Item";
                         }
                     }
                 }
@@ -171,7 +171,7 @@ public class GameInput {
         if (inputCommand.equals(UI.Commands.INVENTORY.getStrCommand())) {
             int energyCost = UI.Commands.INVENTORY.getSpeedCommand();
             if (energy - energyCost < 0) {
-                System.out.println("You don't have enough energy to do this");
+                output +=  "You don't have enough energy to do this";
                 //UI.displayEnergy(energy);
             } else {
                 energy -= energyCost;
@@ -185,7 +185,7 @@ public class GameInput {
         if (takeMatch.find()) {
             int energyCost = UI.Commands.TAKE.getSpeedCommand();
             if (energy - energyCost < 0) {
-                System.out.println("You don't have enough energy to do this");
+                output +=  "You don't have enough energy to do this";
                 //UI.displayEnergy(energy);
             } else {
                 String itemString = takeMatch.group(1);
@@ -204,7 +204,7 @@ public class GameInput {
                         firstItem = null;
                     }
                 } catch (ThingNotFoundException e) {
-                    System.out.print(e.getMessage());
+                    output += e.getMessage();
                 }
 
                 while (matcher.find()) {
@@ -215,7 +215,7 @@ public class GameInput {
                                 secondItem = container.getItem(matcher.group(1));
                             }
                         } else {
-                            System.out.println("There is no such thing in the container");
+                            output +=  "There is no such thing in the container";
                         }
                     }
                     if (num == -1) {
@@ -225,7 +225,7 @@ public class GameInput {
                                 firstItem = container.getItem(matcher.group(1));
                             }
                         } else {
-                            System.out.println("There is no such thing in the container");
+                            output += "There is no such thing in the container";
                         }
                     }
                     num = num * -1;
@@ -238,7 +238,7 @@ public class GameInput {
                             secondItem = temp.takeItem(secondItem.getName());
                         } catch (ThingNotFoundException e) {
 
-                            System.out.println(e.getMessage());
+                            output += e.getMessage();
                         }
                         player.putItem(secondItem);
                     } else {
@@ -247,7 +247,7 @@ public class GameInput {
                             firstItem = temp.takeItem(firstItem.getName());
                         } catch (ThingNotFoundException e) {
 
-                            System.out.println(e.getMessage());
+                            output += e.getMessage();
                         }
                         player.putItem(firstItem);
                     }
@@ -262,16 +262,16 @@ public class GameInput {
         if (dropMatch.find()) {
             int energyCost = UI.Commands.DROP.getSpeedCommand();
             if (energy - energyCost < 0) {
-                System.out.println("You don't have enough energy to do this");
+                output += "You don't have enough energy to do this";
                 UI.displayEnergy(energy);
             } else {
                 energy -= energyCost;
                 try {
                     Interactable item = player.dropItem(dropMatch.group(1), 0);
                     floor.getRoom(player.getXCoord(), player.getYCoord()).addItem(item);
-                    System.out.println("dropped");
+                    output += "dropped";
                 } catch (ThingNotFoundException e) {
-                    System.out.println(e.getMessage());
+                    e.getMessage();
                 }
 
             }
@@ -284,10 +284,12 @@ public class GameInput {
             UI.displayHeath(player.getHealth(), player.getMaxHealth());
             commandKnown = false;
         }
-        if (inputCommand.equals("map")) {
-            UI.displayMap(floor.getXSize(), floor.getYSize(), player, floor);
-            commandKnown = false;
-        }
+
+        //TODO: Make Map work
+        // if (inputCommand.equals("map")) {
+        //     UI.displayMap(floor.getXSize(), floor.getYSize(), player, floor);
+        //     commandKnown = false;
+        // }
 
         // attack command
         if (attackMatch.find()) {
@@ -295,7 +297,7 @@ public class GameInput {
             String weaponString = attackMatch.group(2);
             int energyCost = UI.Commands.ATTACK.getSpeedCommand();
             if (energy - energyCost < 0) {
-                System.out.println("You don't have enough energy to do this");
+                output += "You don't have enough energy to do this";
                 UI.displayEnergy(energy);
             } else {
                 if (player.isInInventory(weaponString)) {
@@ -308,11 +310,11 @@ public class GameInput {
                         }
 
                     } catch (ThingNotFoundException e) {
-                        System.out.println(e.getMessage());
+                        e.getMessage();
                     }
                     energy -= energyCost;
                 } else {
-                    System.out.println("You don't have that in your inventory, so you attack with your hands");
+                    output += "You don't have that in your inventory, so you attack with your hands";
                 }
             }
             commandKnown = false;
@@ -320,7 +322,7 @@ public class GameInput {
 
         // energy command
         if (inputCommand.equals(UI.Commands.ENERGY.getStrCommand())) {
-            System.out.println("\tEnergy: " + energy);
+            output += "\tEnergy: " + energy;
             UI.displayEnergy(energy);
             commandKnown = false;
         }
@@ -335,28 +337,28 @@ public class GameInput {
             int randNum = rand.nextInt(5);
             switch (randNum) {
                 case 0:
-                    System.out.println(
-                            "Your eyes feel tired you can't go on. And so you take a short nap. But it must be quick you think, Your family is waiting");
+                    
+                output += "Your eyes feel tired you can't go on. And so you take a short nap. But it must be quick you think, Your family is waiting";
                     break;
                 case 1:
-                    System.out.println(
-                            "The floor doesn't seem so bad you think, as you sink to your ground. I have to be quick though.");
+                    
+                output +=  "The floor doesn't seem so bad you think, as you sink to your ground. I have to be quick though.";
                     break;
                 case 2:
-                    System.out.println(
-                            "Your eye lids droop and you can't take another step. This isn't the time to be falling asleep you think. My family can't wait");
+                    
+                output += "Your eye lids droop and you can't take another step. This isn't the time to be falling asleep you think. My family can't wait";
                     break;
                 case 3:
-                    System.out.println(
-                            "Time has flown by and you are too tired tired to think right now. You fall to the ground and start to sleep.");
+                    
+                output += "Time has flown by and you are too tired tired to think right now. You fall to the ground and start to sleep.";
                     break;
                 case 4:
-                    System.out.println(
-                            "No more falling asleep you think. You have got to find one of those energy potions. There might be one somewhere you think as you fall asleep.");
+                    
+                output += "No more falling asleep you think. You have got to find one of those energy potions. There might be one somewhere you think as you fall asleep.";
                     break;
                 case 5:
-                    System.out.println(
-                            "I want a bed you think. Sleeping on the ground has got your back in knots. But you are just too tired to find a bed.");
+                    
+                output += "I want a bed you think. Sleeping on the ground has got your back in knots. But you are just too tired to find a bed.";
             }
 
             Updates.update(player, floor);
@@ -366,14 +368,14 @@ public class GameInput {
         }
 
         if (inputCommand.equals("descend")) {
-            System.out.println("You reached the end of the Demo, thanks for playing");
+            output += "You reached the end of the Demo, thanks for playing";
         }
 
         // Easter eggs
         if (inputCommand.equals("Xyzzyz")) {
             player.setConstitution(15);
             player.setHealth();
-            System.out.println("You have found the cheat code. Your health is now 30");
+            output += "You have found the cheat code. Your health is now 30";
             commandKnown = false;
             ;
         }
@@ -381,9 +383,9 @@ public class GameInput {
             if (player.isInInventory("Knife")) {
                 player.setConstitution(0);
                 player.setHealth();
-                System.out.println("You found the secret ending. PS this was Adam's idea");
+                output +=  "You found the secret ending. PS this was Adam's idea";
             } else {
-                System.out.println("You don't have a knife to eat");
+                output += "You don't have a knife to eat";
             }
             commandKnown = false;
         }
@@ -400,7 +402,7 @@ public class GameInput {
 
         // if command is not known
         if (commandKnown && inputCommand.equals("exit") == false) {
-            System.out.println("Sorry I don't know what you wanted.");
+            output += "Sorry I don't know what you wanted.";
         }
 
         floor.getRoom(player.getXCoord(), player.getYCoord()).visit();
