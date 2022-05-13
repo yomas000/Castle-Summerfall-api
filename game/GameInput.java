@@ -23,6 +23,7 @@ public class GameInput {
     /**
      * @param args
      */
+
     public static String input(String inputCommand) {
         String output = "";
 
